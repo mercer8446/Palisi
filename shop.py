@@ -1,6 +1,7 @@
 import telebot
 from telebot.types import ReplyKeyboardMarkup, KeyboardButton, InlineKeyboardMarkup, InlineKeyboardButton
 
+# تنظیمات اصلی
 TOKEN = "8506329567:AAEoiyOGiKWWu5tf1aWXdVcA2cFp1Sc3eXQ"
 REQUIRED_CHANNEL = "@mercervpn"
 SUPPORT_ID = "devil0night" 
@@ -42,9 +43,19 @@ def start(message):
     if not check_membership(message.from_user.id):
         markup = InlineKeyboardMarkup()
         markup.add(InlineKeyboardButton("🔗 عضویت در کانال", url=f"https://t.me/{REQUIRED_CHANNEL.replace('@', '')}"))
-        bot.reply_to(message, "👋 ابتدا باید در کانال ما عضو شوید:", reply_markup=markup)
+        markup.add(InlineKeyboardButton("✅ تأیید عضویت", callback_data="check_join"))
+        bot.reply_to(message, "👋 ابتدا باید در کانال ما عضو شوید و سپس روی دکمه زیر کلیک کنید:", reply_markup=markup)
         return
     bot.send_message(message.chat.id, "🔥 به فروشگاه MERCER VPN خوش آمدید.\nجهت خرید یا پشتیبانی از منو استفاده کنید:", reply_markup=main_keyboard())
+
+@bot.callback_query_handler(func=lambda call: call.data == "check_join")
+def handle_join_check(call):
+    if check_membership(call.from_user.id):
+        bot.answer_callback_query(call.id, "✅ عضویت شما تایید شد!")
+        bot.delete_message(call.message.chat.id, call.message.message_id)
+        bot.send_message(call.message.chat.id, "🔥 به فروشگاه خوش آمدید:", reply_markup=main_keyboard())
+    else:
+        bot.answer_callback_query(call.id, "❌ شما هنوز عضو نشدید!", show_alert=True)
 
 @bot.message_handler(func=lambda message: True)
 def handle_text(message):
@@ -57,7 +68,7 @@ def handle_text(message):
     elif message.text == "👨‍💻 پشتیبانی فروش":
         markup = InlineKeyboardMarkup()
         markup.add(InlineKeyboardButton("🚀 ارتباط مستقیم با پشتیبانی", url=f"https://t.me/{SUPPORT_ID}"))
-        bot.send_message(message.chat.id, "👨‍💻 جهت هرگونه سوال یا ارسال فیش به آیدی زیر پیام دهید:\n\n🎯 @{SUPPORT_ID}", reply_markup=markup)
+        bot.send_message(message.chat.id, f"👨‍💻 جهت هرگونه سوال یا ارسال فیش به آیدی زیر پیام دهید:\n\n🎯 @{SUPPORT_ID}", reply_markup=markup)
 
 @bot.callback_query_handler(func=lambda call: call.data.startswith("buy_"))
 def handle_buy(call):
@@ -69,4 +80,4 @@ def handle_buy(call):
 
 print("MERCER Bot Started...")
 bot.infinity_polling()
-
+        
