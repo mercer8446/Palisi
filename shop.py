@@ -2,7 +2,7 @@ import telebot
 from telebot.types import ReplyKeyboardMarkup, KeyboardButton, InlineKeyboardMarkup, InlineKeyboardButton
 
 # تنظیمات اصلی
-TOKEN = "8506329567:AAEoiyOGiKWWu5tf1aWXdVcA2cFp1Sc3eXQ"
+TOKEN = "8506329567:AAFOK8iMRlIFlTGG8yGoImCanGosJhjj-B0"
 REQUIRED_CHANNEL = "@mercervpn"
 SUPPORT_ID = "devil0night" 
 
